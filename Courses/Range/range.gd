@@ -113,9 +113,6 @@ func _setup_layout_system() -> void:
 		layout_container.add_child(layout)
 		layout.hide()
 
-		if layout.has_signal("club_selected"):
-			layout.club_selected.connect(_on_layout_club_selected)
-
 	_switch_active_layout(LayoutType.DEFAULT)
 
 

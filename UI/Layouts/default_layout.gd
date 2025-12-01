@@ -14,7 +14,6 @@ func _connect_to_range_systems() -> void:
 	if session_recorder:
 		range_ui.rec_button_pressed.connect(session_recorder.toggle_recording)
 		range_ui.set_session.connect(session_recorder._on_range_ui_set_session)
-		range_ui.club_selected.connect(session_recorder._on_range_ui_club_selected)
 
 		session_recorder.recording_state.connect(range_ui._on_session_recorder_recording_state)
 		session_recorder.set_session.connect(range_ui._on_session_recorder_set_session)
@@ -22,7 +21,7 @@ func _connect_to_range_systems() -> void:
 func _ready() -> void:
 	range_ui = get_node_or_null("RangeUI")
 	if range_ui:
-		range_ui.club_selected.connect(_on_club_selected)
+		EventBus.club_selected.connect(_on_club_selected)
 		range_ui.rec_button_pressed.connect(rec_button_pressed.emit)
 		range_ui.hit_shot.connect(_on_hit_shot)
 		range_ui.set_session.connect(_on_set_session)
