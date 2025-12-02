@@ -23,8 +23,8 @@ func _setup_camera_system() -> void:
 	camera_controller.name = "CameraController"
 	add_child(camera_controller)
 
-	if has_node("GolfBall/Ball"):
-		camera_controller.set_ball_target($GolfBall/Ball)
+	if has_node("Player/Ball"):
+		camera_controller.set_ball_target($Player/Ball)
 
 	camera_controller.camera_changed.connect(_on_camera_changed)
 	GlobalSettings.range_settings.camera_follow_mode.setting_changed.connect(set_camera_follow_mode)
@@ -64,16 +64,22 @@ func _handle_camera_input() -> void:
 		return
 
 	if Input.is_action_just_pressed("ui_1"):
+		_reset_camera_toggle()
 		camera_controller.set_camera_mode(CameraController.CameraMode.BEHIND_BALL)
 	elif Input.is_action_just_pressed("ui_2"):
+		_reset_camera_toggle()
 		camera_controller.set_camera_mode(CameraController.CameraMode.DOWN_THE_LINE)
 	elif Input.is_action_just_pressed("ui_3"):
+		_reset_camera_toggle()
 		camera_controller.set_camera_mode(CameraController.CameraMode.FACE_ON)
 	elif Input.is_action_just_pressed("ui_4"):
+		_reset_camera_toggle()
 		camera_controller.set_camera_mode(CameraController.CameraMode.BIRDS_EYE)
 	elif Input.is_action_just_pressed("ui_5"):
+		_reset_camera_toggle(true)
 		camera_controller.set_camera_mode(CameraController.CameraMode.FOLLOW_BALL)
 	elif Input.is_action_just_pressed("ui_c"):
+		_reset_camera_toggle()
 		camera_controller.next_camera()
 
 
@@ -89,11 +95,14 @@ func _on_golf_ball_rest(_ball_data) -> void:
 		ball_data["VLA"] = 0.0
 
 
-func _on_camera_changed(camera_name: String) -> void:
+func _reset_camera_toggle(toggled_on: bool = false) -> void:
+	GlobalSettings.range_settings.camera_follow_mode.set_value(toggled_on)
+
+func _on_camera_changed(_camera_name: String) -> void:
 	pass
 		
 
-func set_camera_follow_mode() -> void:
+func set_camera_follow_mode(_value) -> void:
 	if GlobalSettings.range_settings.camera_follow_mode.value:
 		camera_controller.set_camera_mode(CameraController.CameraMode.FOLLOW_BALL)
 	else:
