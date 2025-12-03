@@ -1,32 +1,31 @@
 extends "res://UI/Layouts/base_layout.gd"
 
-var range_ui: Control
+signal hit_shot(data)
+
+func _ready() -> void:
+	# Connect shot injector
+	var shot_injector = get_node_or_null("ShotInjector")
+	if shot_injector:
+		shot_injector.inject.connect(_on_shot_injector_inject)
+
+	# Connect club selector
+	var club_selector = get_node_or_null("GridCanvas/ClubSelector")
+	if club_selector and club_selector.has_signal("club_selected"):
+		club_selector.club_selected.connect(_on_club_selector_club_selected)
+
+	# Connect EventBus
+	EventBus.club_selected.connect(_on_club_selected)
+
+	# Connect to range systems
+	_connect_to_range_systems()
 
 func _connect_to_range_systems() -> void:
-	if not range_ui or not range_ref:
+	if not range_ref:
 		return
 
 	var golf_ball = range_ref.get_node_or_null("GolfBall")
 	if golf_ball:
-		range_ui.hit_shot.connect(golf_ball._on_range_ui_hit_shot)
-
-	var session_recorder = range_ref.get_node_or_null("SessionRecorder")
-	if session_recorder:
-		range_ui.rec_button_pressed.connect(session_recorder.toggle_recording)
-		range_ui.set_session.connect(session_recorder._on_range_ui_set_session)
-
-		session_recorder.recording_state.connect(range_ui._on_session_recorder_recording_state)
-		session_recorder.set_session.connect(range_ui._on_session_recorder_set_session)
-
-func _ready() -> void:
-	range_ui = get_node_or_null("RangeUI")
-	if range_ui:
-		EventBus.club_selected.connect(_on_club_selected)
-		range_ui.rec_button_pressed.connect(rec_button_pressed.emit)
-		range_ui.hit_shot.connect(_on_hit_shot)
-		range_ui.set_session.connect(_on_set_session)
-
-	_connect_to_range_systems()
+		hit_shot.connect(golf_ball._on_range_ui_hit_shot)
 
 func activate() -> void:
 	visible = true
@@ -35,20 +34,29 @@ func deactivate() -> void:
 	visible = false
 
 func update_data(data: Dictionary) -> void:
-	if range_ui and range_ui.has_method("set_data"):
-		range_ui.set_data(data)
-
-func update_mode_display(_mode: String) -> void:
-	pass
-
-func set_recording_state(is_recording: bool) -> void:
-	pass
+	var grid_canvas = get_node_or_null("GridCanvas")
+	if grid_canvas and grid_canvas.has_method("set_data"):
+		var imperial = GlobalSettings.range_settings.range_units.value == Enums.Units.IMPERIAL
+		if imperial:
+			grid_canvas.get_node_or_null("Distance").set_data(data.get("Distance", "---"))
+			grid_canvas.get_node_or_null("Carry").set_data(data.get("Carry", "---"))
+			grid_canvas.get_node_or_null("Side").set_data(data.get("Offline", "---"))
+			grid_canvas.get_node_or_null("Apex").set_data(data.get("Apex", "---"))
+			grid_canvas.get_node_or_null("VLA").set_data("%.1f" % data.get("VLA", 0.0))
+			grid_canvas.get_node_or_null("HLA").set_data("%.1f" % data.get("HLA", 0.0))
+		else:
+			grid_canvas.get_node_or_null("Distance").set_data(data.get("Distance", "---"))
+			grid_canvas.get_node_or_null("Carry").set_data(data.get("Carry", "---"))
+			grid_canvas.get_node_or_null("Side").set_data(data.get("Offline", "---"))
+			grid_canvas.get_node_or_null("Apex").set_data(data.get("Apex", "---"))
+			grid_canvas.get_node_or_null("VLA").set_data("%.1f" % data.get("VLA", 0.0))
+			grid_canvas.get_node_or_null("HLA").set_data("%.1f" % data.get("HLA", 0.0))
 
 func _on_club_selected(club: String) -> void:
 	club_selected.emit(club)
 
-func _on_hit_shot(data: Dictionary) -> void:
-	pass
+func _on_club_selector_club_selected(club: String) -> void:
+	EventBus.club_selected.emit(club)
 
-func _on_set_session(dir: String, player_name: String) -> void:
-	pass
+func _on_shot_injector_inject(data: Dictionary) -> void:
+	hit_shot.emit(data)

@@ -1,10 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://d0bkmmvq8cqu"]
+[gd_scene load_steps=7 format=3 uid="uid://d0bkmmvq8cqu"]
 
-[ext_resource type="Script" uid="uid://cxc6i6i8yvme" path="res://UI/Layouts/default_layout.gd" id="1_qd4sx"]
-[ext_resource type="PackedScene" uid="uid://da1vsfwmbk8vw" path="res://UI/range_ui.tscn" id="2_x5o8j"]
+[ext_resource type="PackedScene" uid="uid://bxqjwaed60ykh" path="res://UI/data_panel.tscn" id="1_q72xt"]
+[ext_resource type="Script" uid="uid://c8ny7fmnf7erl" path="res://UI/Layouts/default_layout.gd" id="1_qd4sx"]
+[ext_resource type="PackedScene" uid="uid://7ybrycndh0k7" path="res://UI/Components/RangeHeader/range_header_container.tscn" id="2_j5yvw"]
+[ext_resource type="PackedScene" uid="uid://xwb2lctkdfv5" path="res://UI/ClubSelector/club_selector.tscn" id="3_crlyb"]
+[ext_resource type="Script" uid="uid://3iepiwkqvgs7" path="res://UI/grid_canvas.gd" id="5_rfb4h"]
+[ext_resource type="Script" uid="uid://cgdpaxem0op8k" path="res://UI/shot_injector.gd" id="6_j5yvw"]
 
 [node name="DefaultLayout" type="Control"]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,10 +16,145 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qd4sx")
 
-[node name="RangeUI" parent="." instance=ExtResource("2_x5o8j")]
+[node name="RangeHeaderContainer" parent="." instance=ExtResource("2_j5yvw")]
 layout_mode = 1
-anchors_preset = 15
+
+[node name="GridCanvas" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("5_rfb4h")
+
+[node name="Distance" parent="GridCanvas" instance=ExtResource("1_q72xt")]
+layout_mode = 0
+offset_top = 182.0
+offset_right = 120.0
+offset_bottom = 275.0
+label = "Distance"
+units = "yd"
+
+[node name="Carry" parent="GridCanvas" instance=ExtResource("1_q72xt")]
+layout_mode = 0
+offset_top = 230.0
+offset_right = 120.0
+offset_bottom = 323.0
+label = "Carry"
+units = "yd"
+
+[node name="Side" parent="GridCanvas" instance=ExtResource("1_q72xt")]
+layout_mode = 0
+offset_top = 279.0
+offset_right = 120.0
+offset_bottom = 372.0
+label = "Side"
+units = "yd"
+
+[node name="Apex" parent="GridCanvas" instance=ExtResource("1_q72xt")]
+layout_mode = 0
+offset_top = 327.0
+offset_right = 120.0
+offset_bottom = 420.0
+label = "Apex"
+units = "ft"
+
+[node name="VLA" parent="GridCanvas" instance=ExtResource("1_q72xt")]
+layout_mode = 0
+offset_top = 376.0
+offset_right = 120.0
+offset_bottom = 469.0
+label = "VLA"
+units = "deg"
+
+[node name="HLA" parent="GridCanvas" instance=ExtResource("1_q72xt")]
+layout_mode = 0
+offset_top = 424.0
+offset_right = 120.0
+offset_bottom = 517.0
+label = "HLA"
+units = "deg"
+
+[node name="ClubSelector" parent="GridCanvas" instance=ExtResource("3_crlyb")]
+layout_mode = 0
+offset_top = 70.0
+offset_right = 120.0
+offset_bottom = 150.0
+rotation = -0.0004276121
+
+[node name="ShotInjector" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
+anchor_bottom = 0.5
+offset_left = -77.0
+offset_top = -180.5
+offset_bottom = 180.5
+grow_horizontal = 0
 grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+script = ExtResource("6_j5yvw")
+
+[node name="Speed" type="Label" parent="ShotInjector"]
+layout_mode = 2
+text = "Speed"
+
+[node name="SpeedText" type="TextEdit" parent="ShotInjector"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+placeholder_text = "0.0"
+
+[node name="SpinAxis" type="Label" parent="ShotInjector"]
+layout_mode = 2
+text = "SpinAxis"
+
+[node name="SpinAxisText" type="TextEdit" parent="ShotInjector"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+placeholder_text = "0.0"
+
+[node name="TotalSpin" type="Label" parent="ShotInjector"]
+layout_mode = 2
+text = "Total Spin"
+
+[node name="TotalSpinText" type="TextEdit" parent="ShotInjector"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+placeholder_text = "0.0"
+
+[node name="HLA" type="Label" parent="ShotInjector"]
+layout_mode = 2
+text = "HLA"
+
+[node name="HLAText" type="TextEdit" parent="ShotInjector"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+placeholder_text = "0.0"
+
+[node name="VLA" type="Label" parent="ShotInjector"]
+layout_mode = 2
+text = "VLA"
+
+[node name="VLAText" type="TextEdit" parent="ShotInjector"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+placeholder_text = "0.0"
+
+[node name="Button" type="Button" parent="ShotInjector"]
+layout_mode = 2
+text = "Hit Shot"
+
+[connection signal="drag_ended" from="GridCanvas/Distance" to="GridCanvas" method="_on_panel_drag_ended"]
+[connection signal="drag_started" from="GridCanvas/Distance" to="GridCanvas" method="_on_panel_drag_started"]
+[connection signal="drag_ended" from="GridCanvas/Carry" to="GridCanvas" method="_on_panel_drag_ended"]
+[connection signal="drag_started" from="GridCanvas/Carry" to="GridCanvas" method="_on_panel_drag_started"]
+[connection signal="drag_ended" from="GridCanvas/Side" to="GridCanvas" method="_on_panel_drag_ended"]
+[connection signal="drag_started" from="GridCanvas/Side" to="GridCanvas" method="_on_panel_drag_started"]
+[connection signal="drag_ended" from="GridCanvas/Apex" to="GridCanvas" method="_on_panel_drag_ended"]
+[connection signal="drag_started" from="GridCanvas/Apex" to="GridCanvas" method="_on_panel_drag_started"]
+[connection signal="drag_ended" from="GridCanvas/VLA" to="GridCanvas" method="_on_panel_drag_ended"]
+[connection signal="drag_started" from="GridCanvas/VLA" to="GridCanvas" method="_on_panel_drag_started"]
+[connection signal="drag_ended" from="GridCanvas/HLA" to="GridCanvas" method="_on_panel_drag_ended"]
+[connection signal="drag_started" from="GridCanvas/HLA" to="GridCanvas" method="_on_panel_drag_started"]
+[connection signal="pressed" from="ShotInjector/Button" to="ShotInjector" method="_on_button_pressed"]
