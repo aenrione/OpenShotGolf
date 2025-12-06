@@ -103,12 +103,12 @@ func _on_surface_option_item_selected(index: int) -> void:
 
 func update_units(value) -> void:
 	const m2ft = 3.28084
-	
+
 	if value == Enums.Units.IMPERIAL:
 		$MarginContainer/VBoxContainer/Temperature/Label2.text = "F"
 		temperature_spin_box.value = GlobalSettings.range_settings.temperature.value*9/5 + 32
 		GlobalSettings.range_settings.temperature.set_value(temperature_spin_box.value)
-		
+
 		$MarginContainer/VBoxContainer/Altitude/Label2.text = "ft"
 		altitude_spin_box.value = GlobalSettings.range_settings.altitude.value*m2ft
 		GlobalSettings.range_settings.altitude.set_value(altitude_spin_box.value)
@@ -116,7 +116,7 @@ func update_units(value) -> void:
 		$MarginContainer/VBoxContainer/Temperature/Label2.text = "C"
 		temperature_spin_box.value = (GlobalSettings.range_settings.temperature.value - 32) * 5/9
 		GlobalSettings.range_settings.temperature.set_value(temperature_spin_box.value)
-		
+
 		$MarginContainer/VBoxContainer/Temperature/Label2.text = "m"
 		altitude_spin_box.value = GlobalSettings.range_settings.altitude.value/m2ft
 		GlobalSettings.range_settings.altitude.set_value(altitude_spin_box.value)

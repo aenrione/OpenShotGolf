@@ -25,6 +25,8 @@ GlobalSettings="*res://Utils/Settings/global_settings.gd"
 
 window/size/viewport_width=1728
 window/size/viewport_height=972
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [editor_plugins]
 
